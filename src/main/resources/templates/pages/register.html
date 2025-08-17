@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
+<form th:action="@{/register}" method="post" th:object="${registerDTO}">
+    <div>
+        <label for="username">Username</label>
+        <input type="text" id="username" th:field="*{username}" placeholder="Username" required />
+        <div th:if="${usernameErrors != null}">
+            <ul>
+                <li th:each="err : ${usernameErrors}" th:text="${err}"></li>
+            </ul>
+        </div>        
+    </div>
+    <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" th:field="*{password}" placeholder="Password" required />
+        <div th:if="${passwordErrors != null}">
+            <ul>
+                <li th:each="err : ${passwordErrors}" th:text="${err}"></li>
+            </ul>
+        </div>
+    </div>
+    <input type="hidden" name="remember-me" id="remember-me" value="true">
+    <button type="submit">
+        Register
+    </button>
+</form>
+
+</html>

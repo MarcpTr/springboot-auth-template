@@ -1,0 +1,6 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
+  <h1>Error</h1>
+  <p th:if="${error != null}" style="color: red;">[[${error}]]</p>
+  <a href="/">Back to home</a>
+</html>

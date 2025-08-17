@@ -1,0 +1,24 @@
+<div th:fragment="navbar" xmlns:th="http://www.w3.org/1999/xhtml">
+  <header>
+    <nav>
+      <a href="/" title="home">
+        <span>Home</span>
+      </a>
+      <a href="/profile" title="profile">
+        <span>Profile</span>
+      </a>
+      <a href="/forms" th:if="${#authentication.principal != 'anonymousUser'}" title="Create form">
+        <span>Forms</span>
+      </a>
+      <a href="/form/create" th:if="${#authentication.principal != 'anonymousUser'}" title="Create form">
+        <span>Create form</span>
+      </a>
+      <a href="/login" th:if="${#authentication.principal == 'anonymousUser'}" title="Login">
+        <span>Login</span>
+      </a>
+      <a href="/register" th:if="${#authentication.principal == 'anonymousUser'}" title="Register">
+        <span>Register</span>
+      </a>
+    </nav>
+  </header>
+</div>
