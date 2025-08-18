@@ -26,7 +26,7 @@ public class SecurityConfig {
                                                 .permitAll()
                                                 .requestMatchers(POST, "/register", "/login").permitAll()
                                                 .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
-                                                .requestMatchers("/profile").authenticated())
+                                                .requestMatchers("/profile","dashboard").authenticated())
                                 .formLogin(form -> form
                                                 .loginPage("/login")
                                                 .defaultSuccessUrl("/", true)

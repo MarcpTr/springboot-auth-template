@@ -7,11 +7,8 @@
       <a href="/profile" title="profile">
         <span>Profile</span>
       </a>
-      <a href="/forms" th:if="${#authentication.principal != 'anonymousUser'}" title="Create form">
-        <span>Forms</span>
-      </a>
-      <a href="/form/create" th:if="${#authentication.principal != 'anonymousUser'}" title="Create form">
-        <span>Create form</span>
+      <a href="/dashboard" th:if="${#authentication.principal != 'anonymousUser'}" title="Dashboard">
+        <span>Dashboard</span>
       </a>
       <a href="/login" th:if="${#authentication.principal == 'anonymousUser'}" title="Login">
         <span>Login</span>

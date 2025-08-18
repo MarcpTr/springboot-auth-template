@@ -43,7 +43,12 @@ public class UserController {
         model.addAttribute("content", "pages/profile");
         return "layouts/base";
     }
-
+    @GetMapping("/dashboard")
+    public String dashboard(Model model) {
+        model.addAttribute("pageTitle", "Dashboard de " + "username");
+        model.addAttribute("content", "pages/dashboard");
+        return "layouts/base";
+    }
     @GetMapping("/login")
     public String getLogin(Model model) {
         model.addAttribute("pageTitle", "Inicia sesion");
