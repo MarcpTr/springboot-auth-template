@@ -1,6 +1,8 @@
 package com.marcptr.auth_template.config;
 
 import static org.springframework.http.HttpMethod.POST;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,15 +19,21 @@ import com.marcptr.auth_template.service.UserService;
 
 @Configuration
 public class SecurityConfig {
+        @Value("${security.rememberme.key}")
+        private String remembermeKey;
+        @Value("${security.rememberme.token-validity-seconds}")
+        private int tokeValiditySeconds;
+
         @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity http, RememberMeServices rememberMeServices) throws Exception {
+        public SecurityFilterChain securityFilterChain(HttpSecurity http, RememberMeServices rememberMeServices)
+                        throws Exception {
                 http
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/register", "/login", "/", "/error")
                                                 .permitAll()
                                                 .requestMatchers(POST, "/register", "/login").permitAll()
                                                 .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
-                                                .requestMatchers("/profile","dashboard").authenticated())
+                                                .requestMatchers("/profile", "dashboard").authenticated())
                                 .formLogin(form -> form
                                                 .loginPage("/login")
                                                 .defaultSuccessUrl("/", true)
@@ -37,23 +45,25 @@ public class SecurityConfig {
                                                 .deleteCookies("JSESSIONID", "remember-me"))
                                 .rememberMe(remember -> remember
                                                 .rememberMeServices(rememberMeServices)
-                                                .key("3(/w8976H86(/%/")
-                                                .tokenValiditySeconds(604800)
+                                                .key(remembermeKey)
+                                                .tokenValiditySeconds(tokeValiditySeconds)
                                                 .alwaysRemember(false));
                 return http.build();
         }
+
         @Bean
         public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
                 return config.getAuthenticationManager();
         }
+
         @Bean
         public RememberMeServices rememberMeServices(UserService userService) {
                 return new PersistentTokenBasedRememberMeServices(
-                                "3(/w8976H86(/%/", 
+                                remembermeKey,
                                 userService,
-                                new InMemoryTokenRepositoryImpl() 
-                );
+                                new InMemoryTokenRepositoryImpl());
         }
+
         @Bean
         public PasswordEncoder passwordEncoder() {
                 return new BCryptPasswordEncoder();
