@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
@@ -58,6 +59,7 @@ public class UserController {
     @GetMapping("/profile")
     public String profile(@AuthenticationPrincipal CustomUserDetails user, Model model) {
         model.addAttribute("username", user.getUsername());
+        model.addAttribute("profileImagePath", user.getUser().getProfileImagePath());
         model.addAttribute("profileImagePath", user.getUser().getProfileImagePath());
         model.addAttribute("pageTitle", "Perfil de " + "username");
         model.addAttribute("content", "pages/profile");
@@ -115,7 +117,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/uploadProfileImage")
+    @PostMapping("/user/uploadProfileImage")
     public ResponseEntity<String> uploadProfileImage(@AuthenticationPrincipal CustomUserDetails user,
             @RequestParam("image") MultipartFile file) throws IOException {
         String contentType = file.getContentType();
@@ -140,8 +142,9 @@ public class UserController {
 
         Path filePath = uploadPath.resolve(fileName);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-        System.out.println(file.getName());
+        
+        userService.updateImageProfilePath(user.getUsername(), filePath.toString());
+        
         return ResponseEntity.ok("Imagen subida correctamente.");
     }
 

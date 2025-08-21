@@ -1,15 +1,59 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
 <h1>Perfil de usuario: <span th:text="${username}"></span> </h1>
-<img th:src="${profileImagePath}" alt="">
+<img th:src="@{/profile_images/{filename}(filename=${profileImagePath})}" alt="Imagen de perfil" />
+
 <form th:action="@{/logout}" method="post">
     <button type="submit">Cerrar sesión</button>
 </form>
-<form method="post" enctype="multipart/form-data" th:action="@{/uploadProfileImage}">
-    <input type="file" name="image" accept="image/png, image/jpeg" required />
-    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
-    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+<form id="uploadForm">
+    <input type="file" id="imageInput" name="image" accept="image/png, image/jpeg" required />
     <button type="submit">Subir imagen</button>
 </form>
+
+<div id="uploadMessage"></div>
+<script>
+  document.getElementById('uploadForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const fileInput = document.getElementById('imageInput');
+    const messageDiv = document.getElementById('uploadMessage');
+
+    
+  const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+  const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    if (fileInput.files.length === 0) {
+      messageDiv.innerText = 'Por favor selecciona una imagen.';
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('image', fileInput.files[0]);
+
+    try {
+      const response = await fetch('/user/uploadProfileImage', {
+        method: 'POST',
+        body: formData,
+        credentials: 'same-origin', 
+        headers: {
+        [csrfHeader]: csrfToken
+      }
+    });
+
+      const text = await response.text();
+      if (response.ok) {
+        messageDiv.style.color = 'green';
+        messageDiv.innerText = text;
+      } else {
+        messageDiv.style.color = 'red';
+        messageDiv.innerText = text;
+      }
+    } catch (error) {
+      messageDiv.style.color = 'red';
+      messageDiv.innerText = 'Error al enviar la imagen.';
+    }
+  });
+</script>
 
 </html>

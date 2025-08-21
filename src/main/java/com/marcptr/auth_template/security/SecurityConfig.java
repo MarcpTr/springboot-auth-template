@@ -29,9 +29,12 @@ public class SecurityConfig {
                         throws Exception {
                 http
                                 .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers("/register", "/login", "/", "/error")
+                                                .requestMatchers("/register", "/login", "/", "/error",
+                                                                "/profile_images/**")
                                                 .permitAll()
-                                                .requestMatchers(POST, "/register", "/login", "uploadProfileImage").permitAll()
+                                                .requestMatchers(POST, "/register", "/login",
+                                                                "/user/uploadProfileImage")
+                                                .permitAll()
                                                 .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
                                                 .requestMatchers("/profile", "dashboard").authenticated())
                                 .formLogin(form -> form
