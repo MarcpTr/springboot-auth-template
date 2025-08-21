@@ -143,7 +143,7 @@ public class UserController {
         Path filePath = uploadPath.resolve(fileName);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
         
-        userService.updateImageProfilePath(user.getUsername(), filePath.toString());
+        userService.updateImageProfilePath(user.getUsername(), fileName);
         
         return ResponseEntity.ok("Imagen subida correctamente.");
     }

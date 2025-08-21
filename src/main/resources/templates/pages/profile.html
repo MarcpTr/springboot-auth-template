@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
 <h1>Perfil de usuario: <span th:text="${username}"></span> </h1>
 <img th:src="@{/profile_images/{filename}(filename=${profileImagePath})}" alt="Imagen de perfil" />
-
 <form th:action="@{/logout}" method="post">
     <button type="submit">Cerrar sesión</button>
 </form>
