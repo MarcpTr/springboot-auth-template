@@ -12,8 +12,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.marcptr.auth_template.exceptions.ValidationException;
+import com.marcptr.auth_template.model.Role;
 import com.marcptr.auth_template.model.User;
 import com.marcptr.auth_template.repository.UserRepository;
+import com.marcptr.auth_template.security.CustomUserDetails;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -23,7 +25,7 @@ public class UserService implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public User registerUser(String username, String password){
+    public User registerUser(String username, String password) {
         Map<String, List<String>> errors = new HashMap<>();
 
         List<String> usernameErrors = new ArrayList<>();
@@ -33,7 +35,7 @@ public class UserService implements UserDetailsService {
         if (!Pattern.compile("^(?=.*[A-Za-z])[A-Za-z0-9]+$")
                 .matcher(username)
                 .find()) {
-                    usernameErrors.add("El nombre de usuario no es válido. Solo se permiten letras y números.");
+            usernameErrors.add("El nombre de usuario no es válido. Solo se permiten letras y números.");
         }
         if (!usernameErrors.isEmpty()) {
             errors.put("username", usernameErrors);
@@ -42,7 +44,7 @@ public class UserService implements UserDetailsService {
         if (!Pattern.compile("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{6,}$")
                 .matcher(password)
                 .find()) {
-                    passwordErrors.add(
+            passwordErrors.add(
                     "La contraseña no cumple con los requisitos. Debe tener al menos 6 caracteres, una minúscula, una mayúscula y un número.");
         }
         if (!passwordErrors.isEmpty()) {
@@ -55,19 +57,15 @@ public class UserService implements UserDetailsService {
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
-        user.setRole("user");
+        user.setRole(Role.USER);
         return userRepository.save(user);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not fount"));
-        org.springframework.security.core.userdetails.User.UserBuilder builder = org.springframework.security.core.userdetails.User
-                .withUsername(username);
-        builder.password(user.getPassword());
-        builder.roles(user.getRole());
-        return builder.build();
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return new CustomUserDetails(user);
     }
 
     public boolean usernameExist(String username) {

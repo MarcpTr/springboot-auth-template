@@ -1,4 +1,4 @@
-package com.marcptr.auth_template.config;
+package com.marcptr.auth_template.security;
 
 import static org.springframework.http.HttpMethod.POST;
 

@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
@@ -16,8 +15,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import com.marcptr.auth_template.exceptions.ValidationException;
-import com.marcptr.auth_template.model.User;
 import com.marcptr.auth_template.model.dto.RegisterDTO;
+import com.marcptr.auth_template.security.CustomUserDetails;
 import com.marcptr.auth_template.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -41,9 +40,9 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public String profile(@AuthenticationPrincipal UserDetails user, Model model) {
-        System.out.println(user.getUsername());
+    public String profile(@AuthenticationPrincipal CustomUserDetails  user, Model model) {
         model.addAttribute("username", user.getUsername());
+        model.addAttribute("profileImagePath", user.getUser().getProfileImagePath());
         model.addAttribute("pageTitle", "Perfil de " + "username");
         model.addAttribute("content", "pages/profile");
         return "layouts/base";

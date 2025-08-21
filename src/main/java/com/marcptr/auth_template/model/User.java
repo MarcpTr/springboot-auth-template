@@ -28,7 +28,8 @@ public class User {
     private String profileImagePath;
     
     @Column(name = "role")
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role  role;
 
     @PrePersist
     protected void onCreate() {
