@@ -5,5 +5,11 @@
 <form th:action="@{/logout}" method="post">
     <button type="submit">Cerrar sesión</button>
 </form>
+<form method="post" enctype="multipart/form-data" th:action="@{/uploadProfileImage}">
+    <input type="file" name="image" accept="image/png, image/jpeg" required />
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <button type="submit">Subir imagen</button>
+</form>
 
 </html>
