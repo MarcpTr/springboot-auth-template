@@ -30,11 +30,11 @@ public class SecurityConfig {
                                                 .requestMatchers("/register", "/login", "/", "/error",
                                                                 "/profile_images/**")
                                                 .permitAll()
-                                                .requestMatchers(POST, "/register", "/login",
-                                                                "/user/uploadProfileImage")
+                                                .requestMatchers(POST, "/register", "/login")
                                                 .permitAll()
                                                 .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
-                                                .requestMatchers("/profile", "dashboard").authenticated())
+                                                .requestMatchers("/profile", "dashboard").authenticated()
+                                                .requestMatchers(POST, "/api/user/uploadProfileImage").authenticated())
                                 .formLogin(form -> form
                                                 .loginPage("/login")
                                                 .defaultSuccessUrl("/", true)

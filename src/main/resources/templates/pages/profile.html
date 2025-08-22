@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
 <h1>Perfil de usuario: <span th:text="${username}"></span> </h1>
-<img th:src="@{/profile_images/{filename}(filename=${profileImagePath})}" alt="Imagen de perfil" />
+<img id="miImagen" th:src="@{/profile_images/{filename}(filename=${profileImagePath})}" alt="Imagen de perfil" />
 <form th:action="@{/logout}" method="post">
-    <button type="submit">Cerrar sesión</button>
+  <button type="submit">Cerrar sesión</button>
 </form>
 <form id="uploadForm">
-    <input type="file" id="imageInput" name="image" accept="image/png, image/jpeg" required />
-    <button type="submit">Subir imagen</button>
+  <input type="file" id="imageInput" name="image" accept="image/png, image/jpeg" required />
+  <button type="submit">Subir imagen</button>
 </form>
-
 <div id="uploadMessage"></div>
 <script>
   document.getElementById('uploadForm').addEventListener('submit', async function (e) {
@@ -18,9 +17,8 @@
     const fileInput = document.getElementById('imageInput');
     const messageDiv = document.getElementById('uploadMessage');
 
-    
-  const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-  const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
     if (fileInput.files.length === 0) {
       messageDiv.innerText = 'Por favor selecciona una imagen.';
@@ -31,19 +29,21 @@
     formData.append('image', fileInput.files[0]);
 
     try {
-      const response = await fetch('/user/uploadProfileImage', {
+      const response = await fetch('/api/user/uploadProfileImage', {
         method: 'POST',
         body: formData,
-        credentials: 'same-origin', 
+        credentials: 'same-origin',
         headers: {
-        [csrfHeader]: csrfToken
-      }
-    });
+          [csrfHeader]: csrfToken
+        }
+      });
 
       const text = await response.text();
       if (response.ok) {
         messageDiv.style.color = 'green';
         messageDiv.innerText = text;
+        const img = document.getElementById('miImagen');
+        img.src = "/profile_images/"+text+`?timestamp=${new Date().getTime()}`;
       } else {
         messageDiv.style.color = 'red';
         messageDiv.innerText = text;
@@ -54,5 +54,4 @@
     }
   });
 </script>
-
 </html>

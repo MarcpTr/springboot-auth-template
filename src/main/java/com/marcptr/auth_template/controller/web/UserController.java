@@ -38,8 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class UserController {
-    @Value("${uploads.profile-image}")
-    private String uploadDir;
+  
 
     @Autowired
     private final UserService userService;
@@ -117,35 +116,6 @@ public class UserController {
         }
     }
 
-    @PostMapping("/user/uploadProfileImage")
-    public ResponseEntity<String> uploadProfileImage(@AuthenticationPrincipal CustomUserDetails user,
-            @RequestParam("image") MultipartFile file) throws IOException {
-        String contentType = file.getContentType();
-        if (!(contentType.equals("image/jpeg") || contentType.equals("image/png"))) {
-            return ResponseEntity.badRequest().body("Formato no soportado. Solo JPG y PNG.");
-        }
-        long maxSize = 2 * 1024 * 1024;
-        if (file.getSize() > maxSize) {
-            return ResponseEntity.badRequest().body("Archivo demasiado grande. Máximo 2MB.");
-        }
-        BufferedImage image = ImageIO.read(file.getInputStream());
-        if (image.getWidth() > 1024 || image.getHeight() > 1024) {
-            return ResponseEntity.badRequest().body("Resolución demasiado alta. Máximo 1024x1024.");
-        }
-        String extension = contentType.equals("image/png") ? ".png" : ".jpg";
-        String fileName = "profile_" + user.getUser().getId() + extension;
-
-        Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-
-        Path filePath = uploadPath.resolve(fileName);
-        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-        
-        userService.updateImageProfilePath(user.getUsername(), fileName);
-        
-        return ResponseEntity.ok("Imagen subida correctamente.");
-    }
+ 
 
 }
