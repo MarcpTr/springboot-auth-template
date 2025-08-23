@@ -7,6 +7,11 @@
       <a href="/profile" title="profile">
         <span>Profile</span>
       </a>
+      <div sec:authorize="hasRole('ADMIN')">
+        <a href="/admin/panel" title="admin panel">
+          <span>Admin panel</span>
+        </a>
+      </div>
       <a href="/dashboard" th:if="${#authentication.principal != 'anonymousUser'}" title="Dashboard">
         <span>Dashboard</span>
       </a>

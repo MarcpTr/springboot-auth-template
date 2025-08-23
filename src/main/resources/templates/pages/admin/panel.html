@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
+<h1>Perfil de admin</h1>
+<table>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.username}"></td>
+        <td th:text="${user.role}"></td>
+        <td th:text="${user.id}"></td>
+        <td th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+        <td>
+            <img th:src="@{/profile_images/{filename}(filename=${user.profileImagePath})}"
+                 alt="Imagen de perfil"
+                 height="40"
+                 width="40" />
+        </td>
+    </tr>
+</table>
+
+</html>

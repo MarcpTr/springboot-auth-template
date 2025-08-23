@@ -59,7 +59,6 @@ public class UserController {
     public String profile(@AuthenticationPrincipal CustomUserDetails user, Model model) {
         model.addAttribute("username", user.getUsername());
         model.addAttribute("profileImagePath", user.getUser().getProfileImagePath());
-        model.addAttribute("profileImagePath", user.getUser().getProfileImagePath());
         model.addAttribute("pageTitle", "Perfil de " + "username");
         model.addAttribute("content", "pages/profile");
         return "layouts/base";
