@@ -33,7 +33,7 @@ public class SecurityConfig {
                                                 .requestMatchers(POST, "/register", "/login")
                                                 .permitAll()
                                                 .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
-                                                .requestMatchers("/profile", "dashboard").authenticated()
+                                                .requestMatchers("/profile").authenticated()
                                                 .requestMatchers(POST, "/api/user/uploadProfileImage").authenticated())
                                 .formLogin(form -> form
                                                 .loginPage("/login")
