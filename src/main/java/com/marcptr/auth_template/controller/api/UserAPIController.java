@@ -6,21 +6,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-
 import javax.imageio.ImageIO;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.marcptr.auth_template.security.CustomUserDetails;
 import com.marcptr.auth_template.service.UserService;
 
@@ -29,17 +24,9 @@ import com.marcptr.auth_template.service.UserService;
 public class UserAPIController {
     @Autowired
     private final UserService userService;
-    @Autowired
-    private final AuthenticationManager authenticationManager;
-    @Autowired
-    private final RememberMeServices rememberMeServices;
 
-    public UserAPIController(UserService userService,
-            AuthenticationManager authenticationManager,
-            RememberMeServices rememberMeServices) {
+    public UserAPIController(UserService userService) {
         this.userService = userService;
-        this.authenticationManager = authenticationManager;
-        this.rememberMeServices = rememberMeServices;
     }
 
     @Value("${uploads.profile-image}")
@@ -70,9 +57,7 @@ public class UserAPIController {
 
         Path filePath = uploadPath.resolve(fileName);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
         userService.updateImageProfilePath(user.getUsername(), fileName);
-
         return ResponseEntity.ok(fileName);
     }
 }
