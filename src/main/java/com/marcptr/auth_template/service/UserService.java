@@ -29,7 +29,7 @@ public class UserService implements UserDetailsService {
         Map<String, List<String>> errors = new HashMap<>();
 
         List<String> usernameErrors = new ArrayList<>();
-        if (userRepository.findByUsername(username).isPresent()) {
+        if (existsByUsername(username)) {
             usernameErrors.add("El nombre de usuario ya está en uso.");
         }
         if (!Pattern.compile("^(?=.*[A-Za-z])[A-Za-z0-9]+$")
@@ -40,6 +40,7 @@ public class UserService implements UserDetailsService {
         if (!usernameErrors.isEmpty()) {
             errors.put("username", usernameErrors);
         }
+        
         List<String> passwordErrors = new ArrayList<>();
         if (!Pattern.compile("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{6,}$")
                 .matcher(password)
@@ -75,7 +76,7 @@ public class UserService implements UserDetailsService {
         return new CustomUserDetails(user);
     }
 
-    public boolean usernameExist(String username) {
+    public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
 }

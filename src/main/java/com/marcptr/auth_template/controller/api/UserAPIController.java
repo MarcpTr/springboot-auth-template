@@ -11,11 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.marcptr.auth_template.model.dto.ProfileImageUploadResponse;
 import com.marcptr.auth_template.security.CustomUserDetails;
 import com.marcptr.auth_template.service.UserService;
 
@@ -31,21 +33,24 @@ public class UserAPIController {
 
     @Value("${uploads.profile-image}")
     private String uploadDir;
+    @Value("${url.profile-image}")
+    private String urlProfile;
 
-    @PostMapping("/user/uploadProfileImage")
-    public ResponseEntity<String> uploadProfileImage(@AuthenticationPrincipal CustomUserDetails user,
+    @PutMapping("/user/uploadProfileImage")
+    public ResponseEntity<Object> uploadProfileImage(@AuthenticationPrincipal CustomUserDetails user,
             @RequestParam("image") MultipartFile file) throws IOException {
+
         String contentType = file.getContentType();
         if (!(contentType.equals("image/jpeg") || contentType.equals("image/png"))) {
-            return ResponseEntity.badRequest().body("Formato no soportado. Solo JPG y PNG.");
+            return ResponseEntity.badRequest().body(new ProfileImageUploadResponse("error", "Formato no soportado. Solo JPG y PNG.",null));
         }
         long maxSize = 2 * 1024 * 1024;
         if (file.getSize() > maxSize) {
-            return ResponseEntity.badRequest().body("Archivo demasiado grande. Máximo 2MB.");
+            return ResponseEntity.badRequest().body(new ProfileImageUploadResponse("error","Archivo demasiado grande. Máximo 2MB.", null));
         }
         BufferedImage image = ImageIO.read(file.getInputStream());
         if (image.getWidth() > 1024 || image.getHeight() > 1024) {
-            return ResponseEntity.badRequest().body("Resolución demasiado alta. Máximo 1024x1024.");
+            return ResponseEntity.badRequest().body(new ProfileImageUploadResponse("error","Resolución demasiado alta. Máximo 1024x1024.",null));
         }
         String extension = contentType.equals("image/png") ? ".png" : ".jpg";
         String fileName = "profile_" + user.getUser().getId() + extension;
@@ -58,6 +63,10 @@ public class UserAPIController {
         Path filePath = uploadPath.resolve(fileName);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
         userService.updateImageProfilePath(user.getUsername(), fileName);
-        return ResponseEntity.ok(fileName);
+        String imageUrl = urlProfile + fileName;
+        ProfileImageUploadResponse response = new ProfileImageUploadResponse("success",
+                "Imagen de perfil actualizada correctamente", imageUrl);
+
+        return ResponseEntity.ok(response);
     }
 }

@@ -15,7 +15,6 @@ import com.marcptr.auth_template.exceptions.ValidationException;
 import com.marcptr.auth_template.model.Role;
 import com.marcptr.auth_template.model.User;
 import com.marcptr.auth_template.repository.UserRepository;
-import com.marcptr.auth_template.security.CustomUserDetails;
 
 @Service
 public class AdminService  {

@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:fragment="content">
 <h1>Perfil de usuario: <span th:text="${username}"></span> </h1>
-<img id="miImagen" th:src="@{/profile_images/{filename}(filename=${profileImagePath})}" alt="Imagen de perfil" height="200px" width="200"/>
+<img id="miImagen" th:src="@{'/profile_images/' + ${profileImagePath}}" alt="Imagen de perfil" height="200px"
+  width="200" />
 <form th:action="@{/logout}" method="post">
   <button type="submit">Cerrar sesión</button>
 </form>
 <form id="uploadForm">
-  <input type="file" id="imageInput" name="image" accept="image/png, image/jpeg" required />
+  <input type="file" id="imageInput" name="image" accept="image/png, image/jpg" required />
   <button type="submit">Subir imagen</button>
 </form>
 <div id="uploadMessage"></div>
@@ -28,30 +29,33 @@
     const formData = new FormData();
     formData.append('image', fileInput.files[0]);
 
-    try {
-      const response = await fetch('/api/user/uploadProfileImage', {
-        method: 'POST',
-        body: formData,
-        credentials: 'same-origin',
-        headers: {
-          [csrfHeader]: csrfToken
-        }
+    fetch('/api/user/uploadProfileImage', {
+      method: 'PUT',
+      body: formData,
+      credentials: 'same-origin',
+      headers: {
+        [csrfHeader]: csrfToken
+      }
+    })
+      .then(response => {
+        return response.json().then(json => {
+          if (json.status=="success") {
+            const img = document.getElementById('miImagen');
+            img.src = json.imageUrl + `?timestamp=${new Date().getTime()}`;
+            messageDiv.style.color = 'green';
+            messageDiv.innerText = json.message;
+          } else{
+            messageDiv.style.color = 'red';
+            messageDiv.innerText = json.message || 'Error al subir la imagen';
+          }
+        });
+      })
+      .catch(error => {
+        messageDiv.style.color = 'red';
+        messageDiv.innerText = 'Error inesperado';
       });
 
-      const text = await response.text();
-      if (response.ok) {
-        messageDiv.style.color = 'green';
-        messageDiv.innerText = text;
-        const img = document.getElementById('miImagen');
-        img.src = "/profile_images/"+text+`?timestamp=${new Date().getTime()}`;
-      } else {
-        messageDiv.style.color = 'red';
-        messageDiv.innerText = text;
-      }
-    } catch (error) {
-      messageDiv.style.color = 'red';
-      messageDiv.innerText = 'Error al enviar la imagen.';
-    }
   });
 </script>
+
 </html>

@@ -1,6 +1,8 @@
 package com.marcptr.auth_template.security;
 
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +36,7 @@ public class SecurityConfig {
                                                 .permitAll()
                                                 .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
                                                 .requestMatchers("/profile").authenticated()
-                                                .requestMatchers(POST, "/api/user/uploadProfileImage").authenticated())
+                                                .requestMatchers(PUT, "/api/user/uploadProfileImage").authenticated())
                                 .formLogin(form -> form
                                                 .loginPage("/login")
                                                 .defaultSuccessUrl("/", true)

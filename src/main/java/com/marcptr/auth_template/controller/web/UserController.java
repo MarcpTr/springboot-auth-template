@@ -44,15 +44,8 @@ public class UserController {
     public String profile(@AuthenticationPrincipal CustomUserDetails user, Model model) {
         model.addAttribute("username", user.getUsername());
         model.addAttribute("profileImagePath", user.getUser().getProfileImagePath());
-        model.addAttribute("pageTitle", "Perfil de " + "username");
+        model.addAttribute("pageTitle", "Perfil de " + user.getUsername());
         model.addAttribute("content", "pages/profile");
-        return "layouts/base";
-    }
-
-    @GetMapping("/dashboard")
-    public String dashboard(Model model) {
-        model.addAttribute("pageTitle", "Dashboard de " + "username");
-        model.addAttribute("content", "pages/dashboard");
         return "layouts/base";
     }
 
