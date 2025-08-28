@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.marcptr.auth_template.model.dto.ProfileImageUploadResponse;
 import com.marcptr.auth_template.security.CustomUserDetails;
 import com.marcptr.auth_template.service.UserService;
