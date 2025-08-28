@@ -61,8 +61,9 @@ public class UserService implements UserDetailsService {
         user.setRole(Role.USER);
         return userRepository.save(user);
     }
+    
 
-     public void updateImageProfilePath(String username, String imagePath) {
+    public void updateProfileImagePath(String username, String imagePath) {
         User user = userRepository.findByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         user.setProfileImagePath(imagePath);

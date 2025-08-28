@@ -61,7 +61,7 @@ public class UserAPIController {
 
         Path filePath = uploadPath.resolve(fileName);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-        userService.updateImageProfilePath(user.getUsername(), fileName);
+        userService.updateProfileImagePath(user.getUsername(), fileName);
         String imageUrl = urlProfile + fileName;
         ProfileImageUploadResponse response = new ProfileImageUploadResponse("success",
                 "Imagen de perfil actualizada correctamente", imageUrl);
